@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Quizziest</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+</head>
+<body>
+    <div class="title-image"><image src="logo.png" alt="quizziest"/></div>
+    <div class="swiper mySwiper container">
+    <div id="cards" class="swiper-wrapper content"></div>
+    <div class="swiper-pagination"></div>
+    </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script type="text/javascript">
+fetch_data();
+$(document).on("click", ".flip-card", function() {
+    $(this).toggleClass("card-rotate");
+    });
+$(window).on( "load", 
+    readyUp
+);
+
+function readyUp( jQuery ) {
+    var swiper = new Swiper(".mySwiper", {
+      slidesPerView: 1,
+      slidesPerGroup: 1,
+      loop: true,
+      loopFillGroupWithBlank: true,
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });
+}
+
+async function fetch_data() {
+    const response = await fetch("./list.json", {});
+    const json = await response.json();
+    console.log(json);
+    return convertJsontoCards(json);
+}
+
+function convertJsontoCards(list) {
+    var cardContainer = document.getElementById("cards");
+    for (var i=0; i < list.length; i++) {
+        var newCard = document.createElement("div");
+        newCard.classList.add("flip-card");
+        newCard.classList.add("swiper-slide");
+        var newFront = document.createElement("div");
+        newFront.classList.add("front");
+        var innerFront = document.createElement("h2");
+        innerFront.textContent = list[i]['Front'];
+        newFront.appendChild(innerFront);
+        newCard.appendChild(newFront);
+        var newBack = document.createElement("div");
+        newBack.classList.add("back");
+        var innerBack = document.createElement("h2");
+        innerBack.textContent = list[i]['Back'];
+        newBack.appendChild(innerBack);
+        newCard.appendChild(newBack);
+        cardContainer.appendChild(newCard);
+    }
+}
+</script>
